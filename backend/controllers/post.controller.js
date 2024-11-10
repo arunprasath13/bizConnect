@@ -65,3 +65,29 @@ export const deletePost = async (req, res) => {
     }
   } catch (error) {}
 };
+
+
+
+export const getPostById = async (req,res) => {
+    try{
+        const postId = req.params.id;
+        const post = await Post.findById(postId).populate("author","name username profilePicture").
+        populate("comments.user","name profilePicture username headline");
+        res.status(200).json(post);
+    }catch(error){
+        console.log("Error in getPostById controller",error)
+         res.status(500).json({message:"Server error "})
+    }
+}
+
+
+
+
+// More to add,
+export const createComment = async (req,res) => {
+    const postId = req.params.id;
+    const {content} = req.body;
+    const post = await Post.findByIdAndUpdate(postId,{
+        $push:{comments:{user:req.user._id,content}}
+    },{new:true}).populate("author","name email username headline profilePicture")
+}
