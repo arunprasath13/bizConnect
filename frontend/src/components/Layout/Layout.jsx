@@ -1,7 +1,9 @@
 import React from "react";
 import Navbar from "../Navbar";
-
+import {useQuery} from "@tanstack/react-query"
 const Layout = ({ children }) => {
+  const {data:authUser,isLoading} = useQuery({queryKey:["authUser"]});
+  console.log("HElloe: ",authUser)
   return (
     <div>
       <Navbar />

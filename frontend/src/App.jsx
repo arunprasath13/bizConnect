@@ -10,21 +10,31 @@ import { axiosInstance } from "./lib/axios.js";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 function App() {
-  const {data:authUser,isLoading} = useQuery({queryKey:["authUser"]
-
-    ,queryFn:async() => {
-      try{
+  const { data: authUser, isLoading } = useQuery({
+    queryKey: ["authUser"],
+    queryFn: async () => {
+      try {
         const res = await axiosInstance.get("/auth/me");
         return res.data;
-      }catch(error){
-        if(error.response && error.response.status === 401){
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
           return null;
         }
-        toast.error("Something went wrong")
+        toast.error("Something went wrong");
+        throw error;
       }
-    }
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
-  console.log("AuthUser: ",authUser)
+  
+
+// 
+  if (isLoading) {
+    return <div>Loading...</div>; // Or any loading indicator
+  }
+
 
   return (
     <Layout>
@@ -37,5 +47,4 @@ function App() {
     </Layout>
   );
 }
-
 export default App;
